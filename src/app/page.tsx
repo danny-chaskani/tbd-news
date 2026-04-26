@@ -106,13 +106,36 @@ function TradingViewSearch({ symbol, onClose }: { symbol: string; onClose: () =>
 }
 
 function FearGreed() {
+  const [showTooltip, setShowTooltip] = useState(false);
   const value = 68;
   const label = value >= 75 ? 'חמדנות קיצונית' : value >= 55 ? 'חמדנות' : value >= 45 ? 'ניטרלי' : value >= 25 ? 'פחד' : 'פחד קיצוני';
   const color = value >= 75 ? '#ef4444' : value >= 55 ? '#f59e0b' : value >= 45 ? '#94a3b8' : value >= 25 ? '#3b82f6' : '#6366f1';
   const angle = (value / 100) * 180 - 90;
+
   return (
-    <div style={{ background: '#111827', border: '1px solid #1e2330', borderRadius: '10px', padding: '16px', marginBottom: '16px' }}>
-      <div style={{ fontSize: '10px', color: '#475569', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px' }}>מדד פחד/חמדנות</div>
+    <div style={{ background: '#111827', border: '1px solid #1e2330', borderRadius: '10px', padding: '16px', marginBottom: '16px', position: 'relative' }}
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}>
+
+      {showTooltip && (
+        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: '#1e293b', border: '1px solid #334155', borderRadius: '10px', padding: '14px', zIndex: 100, width: '260px', fontSize: '12px', color: '#94a3b8', lineHeight: 1.6 }}>
+          <div style={{ fontSize: '13px', fontWeight: 500, color: '#f1f5f9', marginBottom: '8px' }}>מדד פחד/חמדנות</div>
+          <p style={{ margin: '0 0 8px' }}>מדד זה מראה את הסנטימנט הכללי של המשקיעים בשוק, בסולם מ-0 עד 100.</p>
+          <div style={{ display: 'grid', gap: '4px' }}>
+            <div><span style={{ color: '#6366f1' }}>■</span> 0–24 פחד קיצוני – המשקיעים פאניקה</div>
+            <div><span style={{ color: '#3b82f6' }}>■</span> 25–44 פחד – זהירות בשוק</div>
+            <div><span style={{ color: '#94a3b8' }}>■</span> 45–54 ניטרלי – שוק מאוזן</div>
+            <div><span style={{ color: '#f59e0b' }}>■</span> 55–74 חמדנות – אופטימיות</div>
+            <div><span style={{ color: '#ef4444' }}>■</span> 75–100 חמדנות קיצונית – שוק חם מאוד</div>
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#475569' }}>כלי זה משמש משקיעים להחלטות קנייה ומכירה.</div>
+        </div>
+      )}
+
+      <div style={{ fontSize: '10px', color: '#475569', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>מדד פחד/חמדנות</span>
+        <span style={{ fontSize: '14px' }}>ℹ️</span>
+      </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <svg width="80" height="48" viewBox="0 0 80 48">
           <path d="M8 44 A32 32 0 0 1 72 44" fill="none" stroke="#1e2330" strokeWidth="8" strokeLinecap="round" />
