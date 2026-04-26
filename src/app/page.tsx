@@ -360,9 +360,7 @@ export default function Home() {
           <button onClick={() => setLang(l => l === 'he' ? 'en' : 'he')} style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.textMuted, padding: '4px 10px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer' }}>
             {lang === 'he' ? 'EN' : 'עב'}
           </button>
-          <button onClick={() => setIsDark(d => !d)} style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.textMuted, padding: '4px 10px', borderRadius: '6px', fontSize: '14px', cursor: 'pointer' }}>
-            {isDark ? '☀️' : '🌙'}
-          </button>
+          
         </div>
       </nav>
 
