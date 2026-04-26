@@ -8,10 +8,14 @@ const parser = new Parser({
 });
 
 const FEEDS = [
-  { name: 'Ynet כלכלה', url: 'https://www.ynet.co.il/Integration/StoryRss3590.xml', category: 'כלכלה' },
-  { name: 'Globes', url: 'https://www.globes.co.il/rss/rss_top.aspx', category: 'כלכלה' },
-  { name: 'Reuters Business', url: 'https://feeds.reuters.com/reuters/businessNews', category: 'עסקים' },
   { name: 'Yahoo Finance', url: 'https://finance.yahoo.com/news/rssindex', category: 'מניות' },
+  { name: 'Reuters Business', url: 'https://feeds.reuters.com/reuters/businessNews', category: 'עסקים' },
+  { name: 'CNBC', url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html', category: 'כלכלה' },
+  { name: 'MarketWatch', url: 'https://feeds.marketwatch.com/marketwatch/topstories/', category: 'מניות' },
+  { name: 'Investing.com', url: 'https://www.investing.com/rss/news.rss', category: 'כלכלה' },
+  { name: 'Seeking Alpha', url: 'https://seekingalpha.com/feed.xml', category: 'מניות' },
+  { name: 'Globes', url: 'https://www.globes.co.il/rss/rss_top.aspx', category: 'ישראל' },
+  { name: 'Ynet כלכלה', url: 'https://www.ynet.co.il/Integration/StoryRss3590.xml', category: 'ישראל' },
 ];
 
 export async function GET() {
@@ -27,6 +31,7 @@ export async function GET() {
           pubDate: item.pubDate || '',
           source: feed.name,
           category: feed.category,
+          content: item.contentSnippet || item.content || '',
         }));
         allItems.push(...items);
       } catch (e) {
