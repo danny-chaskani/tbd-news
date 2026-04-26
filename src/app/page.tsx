@@ -262,15 +262,79 @@ export default function Home() {
         </div>
 
         {/* Search */}
-        <div style={{ flex: 1, maxWidth: '300px' }}>
-          <input
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            onKeyDown={handleSearch}
-            placeholder="חפש מניה... (AAPL, TEVA, NVDA)"
-            style={{ width: '100%', background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '6px 12px', fontSize: '12px', color: C.text, outline: 'none' }}
-          />
+<div style={{ flex: 1, maxWidth: '300px', position: 'relative' }}>
+  <input
+    value={searchQuery}
+    onChange={e => setSearchQuery(e.target.value)}
+    onKeyDown={handleSearch}
+    placeholder="חפש מניה... (Apple, AAPL, תבא)"
+    style={{ width: '100%', background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '6px 12px', fontSize: '12px', color: C.text, outline: 'none' }}
+  />
+  {searchQuery.length > 0 && (
+    <div style={{ position: 'absolute', top: '100%', right: 0, left: 0, marginTop: '4px', background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '8px', zIndex: 500, overflow: 'hidden' }}>
+      {[
+        { symbol: 'AAPL', name: 'Apple Inc.', market: 'NASDAQ' },
+        { symbol: 'MSFT', name: 'Microsoft', market: 'NASDAQ' },
+        { symbol: 'NVDA', name: 'NVIDIA', market: 'NASDAQ' },
+        { symbol: 'TSLA', name: 'Tesla', market: 'NASDAQ' },
+        { symbol: 'GOOGL', name: 'Alphabet (Google)', market: 'NASDAQ' },
+        { symbol: 'META', name: 'Meta Platforms', market: 'NASDAQ' },
+        { symbol: 'AMZN', name: 'Amazon', market: 'NASDAQ' },
+        { symbol: 'TEVA', name: 'טבע תעשיות', market: 'TASE' },
+        { symbol: 'NICE', name: 'נייס סיסטמס', market: 'TASE' },
+        { symbol: 'CHKP', name: 'צ\'ק פוינט', market: 'TASE' },
+        { symbol: 'ESLT', name: 'אלביט מערכות', market: 'TASE' },
+        { symbol: 'PERI', name: 'פריון נטוורק', market: 'TASE' },
+        { symbol: 'ICL', name: 'כיל', market: 'TASE' },
+        { symbol: 'BEZQ', name: 'בזק', market: 'TASE' },
+        { symbol: 'LUMI', name: 'בנק לאומי', market: 'TASE' },
+        { symbol: 'HAPOALIM', name: 'בנק הפועלים', market: 'TASE' },
+        { symbol: 'DSCT', name: 'בנק דיסקונט', market: 'TASE' },
+        { symbol: 'SPY', name: 'S&P 500 ETF', market: 'NYSE' },
+        { symbol: 'QQQ', name: 'NASDAQ ETF', market: 'NASDAQ' },
+        { symbol: 'GLD', name: 'Gold ETF', market: 'NYSE' },
+      ].filter(s =>
+        s.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 6).map(s => (
+        <div key={s.symbol}
+          onClick={() => { setSelectedSymbol(s.symbol); setSearchQuery(''); setSearchHistory(prev => [s.symbol, ...prev.filter(x => x !== s.symbol)].slice(0, 5)); }}
+          style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: `0.5px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+          onMouseEnter={e => (e.currentTarget.style.background = C.bgSide)}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+          <div>
+            <span style={{ fontSize: '13px', fontWeight: 500, color: C.accent }}>{s.symbol}</span>
+            <span style={{ fontSize: '12px', color: C.textMuted, marginRight: '8px' }}>{s.name}</span>
+          </div>
+          <span style={{ fontSize: '10px', color: C.textDim, background: C.bgSide, padding: '2px 6px', borderRadius: '4px' }}>{s.market}</span>
         </div>
+      ))}
+      {[
+        { symbol: 'AAPL', name: 'Apple Inc.', market: 'NASDAQ' },
+        { symbol: 'MSFT', name: 'Microsoft', market: 'NASDAQ' },
+        { symbol: 'NVDA', name: 'NVIDIA', market: 'NASDAQ' },
+        { symbol: 'TSLA', name: 'Tesla', market: 'NASDAQ' },
+        { symbol: 'GOOGL', name: 'Alphabet (Google)', market: 'NASDAQ' },
+        { symbol: 'TEVA', name: 'טבע תעשיות', market: 'TASE' },
+        { symbol: 'NICE', name: 'נייס סיסטמס', market: 'TASE' },
+        { symbol: 'CHKP', name: 'צ\'ק פוינט', market: 'TASE' },
+        { symbol: 'ESLT', name: 'אלביט מערכות', market: 'TASE' },
+        { symbol: 'ICL', name: 'כיל', market: 'TASE' },
+        { symbol: 'BEZQ', name: 'בזק', market: 'TASE' },
+        { symbol: 'LUMI', name: 'בנק לאומי', market: 'TASE' },
+        { symbol: 'HAPOALIM', name: 'בנק הפועלים', market: 'TASE' },
+        { symbol: 'SPY', name: 'S&P 500 ETF', market: 'NYSE' },
+        { symbol: 'QQQ', name: 'NASDAQ ETF', market: 'NASDAQ' },
+        { symbol: 'GLD', name: 'Gold ETF', market: 'NYSE' },
+      ].filter(s =>
+        s.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ).length === 0 && (
+        <div style={{ padding: '10px 14px', fontSize: '12px', color: C.textDim }}>לא נמצאו תוצאות – לחץ Enter לחיפוש ישיר</div>
+      )}
+    </div>
+  )}
+</div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
           {!isMobile && (
