@@ -73,50 +73,15 @@ function TradingViewMarket() {
   return <div id="tv-market" className="tradingview-widget-container"><div className="tradingview-widget-container__widget"></div></div>;
 }
 
-function TradingViewSearch({ symbol, onClose }: { symbol: string; onClose: () => void }) {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
-    script.async = true;
-    script.innerHTML = JSON.stringify({
-      symbols: [[symbol]],
-      chartOnly: false,
-      width: '100%',
-      height: '400',
-      locale: 'he_IL',
-      colorTheme: 'dark',
-      autosize: false,
-      showVolume: false,
-    });
-    const container = document.getElementById('tv-symbol');
-    if (container && !container.querySelector('script')) container.appendChild(script);
-  }, [symbol]);
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-      <div style={{ background: '#111827', border: '1px solid #1e2330', borderRadius: '12px', width: '100%', maxWidth: '800px', padding: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <span style={{ color: '#f1f5f9', fontWeight: 500, fontSize: '16px' }}>{symbol}</span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '20px', cursor: 'pointer' }}>✕</button>
-        </div>
-        <div id="tv-symbol" className="tradingview-widget-container"><div className="tradingview-widget-container__widget"></div></div>
-      </div>
-    </div>
-  );
-}
-
 function FearGreed() {
   const [showTooltip, setShowTooltip] = useState(false);
   const value = 68;
   const label = value >= 75 ? 'חמדנות קיצונית' : value >= 55 ? 'חמדנות' : value >= 45 ? 'ניטרלי' : value >= 25 ? 'פחד' : 'פחד קיצוני';
   const color = value >= 75 ? '#ef4444' : value >= 55 ? '#f59e0b' : value >= 45 ? '#94a3b8' : value >= 25 ? '#3b82f6' : '#6366f1';
   const angle = (value / 100) * 180 - 90;
-
   return (
     <div style={{ background: '#111827', border: '1px solid #1e2330', borderRadius: '10px', padding: '16px', marginBottom: '16px', position: 'relative' }}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}>
-
+      onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
       {showTooltip && (
         <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: '#1e293b', border: '1px solid #334155', borderRadius: '10px', padding: '14px', zIndex: 100, width: '260px', fontSize: '12px', color: '#94a3b8', lineHeight: 1.6 }}>
           <div style={{ fontSize: '13px', fontWeight: 500, color: '#f1f5f9', marginBottom: '8px' }}>מדד פחד/חמדנות</div>
@@ -131,23 +96,120 @@ function FearGreed() {
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#475569' }}>כלי זה משמש משקיעים להחלטות קנייה ומכירה.</div>
         </div>
       )}
-
       <div style={{ fontSize: '10px', color: '#475569', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span>מדד פחד/חמדנות</span>
-        <span style={{ fontSize: '14px' }}>ℹ️</span>
+        <span>מדד פחד/חמדנות</span><span style={{ fontSize: '14px' }}>ℹ️</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <svg width="80" height="48" viewBox="0 0 80 48">
           <path d="M8 44 A32 32 0 0 1 72 44" fill="none" stroke="#1e2330" strokeWidth="8" strokeLinecap="round" />
-          <path d="M8 44 A32 32 0 0 1 72 44" fill="none" stroke={color} strokeWidth="8" strokeLinecap="round"
-            strokeDasharray={`${value * 1.005} 100.5`} />
-          <line x1="40" y1="44" x2={40 + 28 * Math.cos((angle * Math.PI) / 180)} y2={44 + 28 * Math.sin((angle * Math.PI) / 180)}
-            stroke="#f1f5f9" strokeWidth="2" strokeLinecap="round" />
+          <path d="M8 44 A32 32 0 0 1 72 44" fill="none" stroke={color} strokeWidth="8" strokeLinecap="round" strokeDasharray={`${value * 1.005} 100.5`} />
+          <line x1="40" y1="44" x2={40 + 28 * Math.cos((angle * Math.PI) / 180)} y2={44 + 28 * Math.sin((angle * Math.PI) / 180)} stroke="#f1f5f9" strokeWidth="2" strokeLinecap="round" />
           <circle cx="40" cy="44" r="3" fill="#f1f5f9" />
         </svg>
         <div>
           <div style={{ fontSize: '24px', fontWeight: 500, color }}>{value}</div>
           <div style={{ fontSize: '12px', color: '#94a3b8' }}>{label}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const STOCKS = [
+  { symbol: 'AAPL', name: 'Apple Inc.', market: 'NASDAQ' },
+  { symbol: 'MSFT', name: 'Microsoft', market: 'NASDAQ' },
+  { symbol: 'NVDA', name: 'NVIDIA', market: 'NASDAQ' },
+  { symbol: 'TSLA', name: 'Tesla', market: 'NASDAQ' },
+  { symbol: 'GOOGL', name: 'Alphabet (Google)', market: 'NASDAQ' },
+  { symbol: 'META', name: 'Meta Platforms', market: 'NASDAQ' },
+  { symbol: 'AMZN', name: 'Amazon', market: 'NASDAQ' },
+  { symbol: 'NFLX', name: 'Netflix', market: 'NASDAQ' },
+  { symbol: 'AMD', name: 'AMD', market: 'NASDAQ' },
+  { symbol: 'INTC', name: 'Intel', market: 'NASDAQ' },
+  { symbol: 'SPY', name: 'S&P 500 ETF', market: 'NYSE' },
+  { symbol: 'QQQ', name: 'NASDAQ ETF', market: 'NASDAQ' },
+  { symbol: 'GLD', name: 'Gold ETF', market: 'NYSE' },
+  { symbol: 'TEVA', name: 'טבע תעשיות', market: 'TASE' },
+  { symbol: 'NICE', name: 'נייס סיסטמס', market: 'TASE' },
+  { symbol: 'CHKP', name: "צ'ק פוינט", market: 'TASE' },
+  { symbol: 'ESLT', name: 'אלביט מערכות', market: 'TASE' },
+  { symbol: 'ICL', name: 'כיל', market: 'TASE' },
+  { symbol: 'BEZQ', name: 'בזק', market: 'TASE' },
+  { symbol: 'LUMI', name: 'בנק לאומי', market: 'TASE' },
+  { symbol: 'HAPOALIM', name: 'בנק הפועלים', market: 'TASE' },
+  { symbol: 'DSCT', name: 'בנק דיסקונט', market: 'TASE' },
+  { symbol: 'PERI', name: 'פריון נטוורק', market: 'TASE' },
+];
+
+function StockPage({ symbol, onClose, news, C, isMobile }: { symbol: string; onClose: () => void; news: NewsItem[]; C: any; isMobile: boolean }) {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      symbol,
+      width: '100%',
+      height: '400',
+      locale: 'he_IL',
+      colorTheme: 'dark',
+      hide_top_toolbar: false,
+      hide_legend: false,
+      save_image: false,
+    });
+    const container = document.getElementById('tv-adv-chart');
+    if (container && !container.querySelector('script')) container.appendChild(script);
+  }, [symbol]);
+
+  const relatedNews = news.filter(n =>
+    n.title.toLowerCase().includes(symbol.toLowerCase()) ||
+    n.source === 'Yahoo Finance'
+  ).slice(0, 6);
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)', zIndex: 1000, overflowY: 'auto' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: isMobile ? '16px' : '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 16px' }}>
+              <div style={{ fontSize: '20px', fontWeight: 500, color: C.accent }}>{symbol}</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '13px', color: C.textMuted }}>נתוני שוק בזמן אמת</div>
+              <div style={{ fontSize: '11px', color: C.textDim }}>מקור: TradingView</div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.textMuted, fontSize: '18px', cursor: 'pointer', borderRadius: '8px', padding: '6px 12px' }}>✕</button>
+        </div>
+
+        <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', marginBottom: '20px' }}>
+          <div id="tv-adv-chart" className="tradingview-widget-container">
+            <div className="tradingview-widget-container__widget"></div>
+          </div>
+        </div>
+
+        <div style={{ fontSize: '11px', color: C.textDim, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px', paddingBottom: '8px', borderBottom: `1px solid ${C.border}` }}>חדשות קשורות</div>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+          {relatedNews.length > 0 ? relatedNews.map((item, i) => (
+            <div key={i} style={{ background: C.bgCard, border: `0.5px solid ${C.border}`, borderRadius: '10px', padding: '14px', cursor: 'pointer' }}
+              onClick={() => window.open(item.link, '_blank')}>
+              <div style={{ fontSize: '10px', color: C.accent, marginBottom: '5px', fontWeight: 500 }}>{item.source}</div>
+              <div style={{ fontSize: '13px', color: C.textMuted, lineHeight: 1.45 }}>{item.title}</div>
+              <div style={{ fontSize: '11px', color: C.textDim, marginTop: '6px' }}>{timeAgo(item.pubDate)}</div>
+            </div>
+          )) : (
+            <div style={{ color: C.textDim, fontSize: '13px', padding: '20px 0' }}>אין חדשות ספציפיות למניה זו כרגע</div>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`מניה: ${symbol}\nhttps://finance.yahoo.com/quote/${symbol}`)}`, '_blank')}
+            style={{ background: '#25d366', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 500 }}>
+            שתף בוואטסאפ
+          </button>
+          <button onClick={() => window.open(`https://t.me/share/url?url=${encodeURIComponent(`https://finance.yahoo.com/quote/${symbol}`)}&text=${encodeURIComponent(`מניה: ${symbol}`)}`, '_blank')}
+            style={{ background: '#0088cc', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 500 }}>
+            שתף בטלגרם
+          </button>
         </div>
       </div>
     </div>
@@ -189,14 +251,11 @@ export default function Home() {
   };
 
   const shareWhatsapp = (article: NewsItem) => {
-    const text = encodeURIComponent(`${article.title}\n${article.link}`);
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${article.title}\n${article.link}`)}`, '_blank');
   };
 
   const shareTelegram = (article: NewsItem) => {
-    const text = encodeURIComponent(article.title);
-    const url = encodeURIComponent(article.link);
-    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(article.link)}&text=${encodeURIComponent(article.title)}`, '_blank');
   };
 
   const categories = ['הכל', 'מניות', 'כלכלה', 'עסקים', 'ישראל'];
@@ -204,6 +263,11 @@ export default function Home() {
   const hero = filtered[0];
   const secondary = filtered.slice(1, isMobile ? 3 : 5);
   const cards = filtered.slice(isMobile ? 3 : 5);
+
+  const filteredStocks = STOCKS.filter(s =>
+    s.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    s.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ).slice(0, 6);
 
   const C = {
     bg: isDark ? '#0d0f14' : '#f8fafc',
@@ -220,18 +284,17 @@ export default function Home() {
   };
 
   return (
-    <main dir="rtl" style={{ background: C.bg, minHeight: '100vh', fontFamily: 'system-ui,sans-serif', transition: 'background .2s' }}>
+    <main dir="rtl" style={{ background: C.bg, minHeight: '100vh', fontFamily: 'system-ui,sans-serif' }}>
 
       {selectedSymbol && (
-        <TradingViewSearch symbol={selectedSymbol} onClose={() => setSelectedSymbol(null)} />
+        <StockPage symbol={selectedSymbol} onClose={() => setSelectedSymbol(null)} news={news} C={C} isMobile={isMobile} />
       )}
 
-      {/* Article Modal */}
       {selectedArticle && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 1000, overflowY: 'auto', padding: '20px' }}>
           <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '12px', maxWidth: '800px', margin: '0 auto', padding: isMobile ? '20px 16px' : '32px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-              <span style={{ fontSize: '11px', color: C.accent, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '.5px' }}>{selectedArticle.source} · {selectedArticle.category}</span>
+              <span style={{ fontSize: '11px', color: C.accent, fontWeight: 500, textTransform: 'uppercase' }}>{selectedArticle.source} · {selectedArticle.category}</span>
               <button onClick={() => setSelectedArticle(null)} style={{ background: 'none', border: 'none', color: C.textMuted, fontSize: '20px', cursor: 'pointer' }}>✕</button>
             </div>
             <h1 style={{ fontSize: isMobile ? '20px' : '26px', fontWeight: 500, color: C.text, lineHeight: 1.4, marginBottom: '12px' }}>{selectedArticle.title}</h1>
@@ -240,15 +303,9 @@ export default function Home() {
               <p style={{ fontSize: '15px', color: C.textMuted, lineHeight: 1.7, marginBottom: '24px' }}>{selectedArticle.content}</p>
             )}
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <button onClick={() => shareWhatsapp(selectedArticle)} style={{ background: '#25d366', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 500 }}>
-                שתף בוואטסאפ
-              </button>
-              <button onClick={() => shareTelegram(selectedArticle)} style={{ background: '#0088cc', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 500 }}>
-                שתף בטלגרם
-              </button>
-              <a href={selectedArticle.link} target="_blank" rel="noopener noreferrer" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textMuted, padding: '8px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', textDecoration: 'none' }}>
-                {lang === 'he' ? 'קרא מקור' : 'Read Original'}
-              </a>
+              <button onClick={() => shareWhatsapp(selectedArticle)} style={{ background: '#25d366', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 500 }}>שתף בוואטסאפ</button>
+              <button onClick={() => shareTelegram(selectedArticle)} style={{ background: '#0088cc', border: 'none', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 500 }}>שתף בטלגרם</button>
+              <a href={selectedArticle.link} target="_blank" rel="noopener noreferrer" style={{ background: 'transparent', border: `1px solid ${C.border}`, color: C.textMuted, padding: '8px 16px', borderRadius: '8px', fontSize: '13px', textDecoration: 'none' }}>קרא מקור</a>
             </div>
           </div>
         </div>
@@ -262,79 +319,35 @@ export default function Home() {
         </div>
 
         {/* Search */}
-<div style={{ flex: 1, maxWidth: '300px', position: 'relative' }}>
-  <input
-    value={searchQuery}
-    onChange={e => setSearchQuery(e.target.value)}
-    onKeyDown={handleSearch}
-    placeholder="חפש מניה... (Apple, AAPL, תבא)"
-    style={{ width: '100%', background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '6px 12px', fontSize: '12px', color: C.text, outline: 'none' }}
-  />
-  {searchQuery.length > 0 && (
-    <div style={{ position: 'absolute', top: '100%', right: 0, left: 0, marginTop: '4px', background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '8px', zIndex: 500, overflow: 'hidden' }}>
-      {[
-        { symbol: 'AAPL', name: 'Apple Inc.', market: 'NASDAQ' },
-        { symbol: 'MSFT', name: 'Microsoft', market: 'NASDAQ' },
-        { symbol: 'NVDA', name: 'NVIDIA', market: 'NASDAQ' },
-        { symbol: 'TSLA', name: 'Tesla', market: 'NASDAQ' },
-        { symbol: 'GOOGL', name: 'Alphabet (Google)', market: 'NASDAQ' },
-        { symbol: 'META', name: 'Meta Platforms', market: 'NASDAQ' },
-        { symbol: 'AMZN', name: 'Amazon', market: 'NASDAQ' },
-        { symbol: 'TEVA', name: 'טבע תעשיות', market: 'TASE' },
-        { symbol: 'NICE', name: 'נייס סיסטמס', market: 'TASE' },
-        { symbol: 'CHKP', name: 'צ\'ק פוינט', market: 'TASE' },
-        { symbol: 'ESLT', name: 'אלביט מערכות', market: 'TASE' },
-        { symbol: 'PERI', name: 'פריון נטוורק', market: 'TASE' },
-        { symbol: 'ICL', name: 'כיל', market: 'TASE' },
-        { symbol: 'BEZQ', name: 'בזק', market: 'TASE' },
-        { symbol: 'LUMI', name: 'בנק לאומי', market: 'TASE' },
-        { symbol: 'HAPOALIM', name: 'בנק הפועלים', market: 'TASE' },
-        { symbol: 'DSCT', name: 'בנק דיסקונט', market: 'TASE' },
-        { symbol: 'SPY', name: 'S&P 500 ETF', market: 'NYSE' },
-        { symbol: 'QQQ', name: 'NASDAQ ETF', market: 'NASDAQ' },
-        { symbol: 'GLD', name: 'Gold ETF', market: 'NYSE' },
-      ].filter(s =>
-        s.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 6).map(s => (
-        <div key={s.symbol}
-          onClick={() => { setSelectedSymbol(s.symbol); setSearchQuery(''); setSearchHistory(prev => [s.symbol, ...prev.filter(x => x !== s.symbol)].slice(0, 5)); }}
-          style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: `0.5px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-          onMouseEnter={e => (e.currentTarget.style.background = C.bgSide)}
-          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-          <div>
-            <span style={{ fontSize: '13px', fontWeight: 500, color: C.accent }}>{s.symbol}</span>
-            <span style={{ fontSize: '12px', color: C.textMuted, marginRight: '8px' }}>{s.name}</span>
-          </div>
-          <span style={{ fontSize: '10px', color: C.textDim, background: C.bgSide, padding: '2px 6px', borderRadius: '4px' }}>{s.market}</span>
+        <div style={{ flex: 1, maxWidth: '300px', position: 'relative' }}>
+          <input
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch}
+            placeholder="חפש מניה... (Apple, AAPL, טבע)"
+            style={{ width: '100%', background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '6px 12px', fontSize: '12px', color: C.text, outline: 'none' }}
+          />
+          {searchQuery.length > 0 && (
+            <div style={{ position: 'absolute', top: '100%', right: 0, left: 0, marginTop: '4px', background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '8px', zIndex: 500, overflow: 'hidden' }}>
+              {filteredStocks.map(s => (
+                <div key={s.symbol}
+                  onClick={() => { setSelectedSymbol(s.symbol); setSearchQuery(''); setSearchHistory(prev => [s.symbol, ...prev.filter(x => x !== s.symbol)].slice(0, 5)); }}
+                  style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: `0.5px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = C.bgSide)}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                  <div>
+                    <span style={{ fontSize: '13px', fontWeight: 500, color: C.accent }}>{s.symbol}</span>
+                    <span style={{ fontSize: '12px', color: C.textMuted, marginRight: '8px' }}>{s.name}</span>
+                  </div>
+                  <span style={{ fontSize: '10px', color: C.textDim, background: C.bgSide, padding: '2px 6px', borderRadius: '4px' }}>{s.market}</span>
+                </div>
+              ))}
+              {filteredStocks.length === 0 && (
+                <div style={{ padding: '10px 14px', fontSize: '12px', color: C.textDim }}>לא נמצאו תוצאות – לחץ Enter לחיפוש ישיר</div>
+              )}
+            </div>
+          )}
         </div>
-      ))}
-      {[
-        { symbol: 'AAPL', name: 'Apple Inc.', market: 'NASDAQ' },
-        { symbol: 'MSFT', name: 'Microsoft', market: 'NASDAQ' },
-        { symbol: 'NVDA', name: 'NVIDIA', market: 'NASDAQ' },
-        { symbol: 'TSLA', name: 'Tesla', market: 'NASDAQ' },
-        { symbol: 'GOOGL', name: 'Alphabet (Google)', market: 'NASDAQ' },
-        { symbol: 'TEVA', name: 'טבע תעשיות', market: 'TASE' },
-        { symbol: 'NICE', name: 'נייס סיסטמס', market: 'TASE' },
-        { symbol: 'CHKP', name: 'צ\'ק פוינט', market: 'TASE' },
-        { symbol: 'ESLT', name: 'אלביט מערכות', market: 'TASE' },
-        { symbol: 'ICL', name: 'כיל', market: 'TASE' },
-        { symbol: 'BEZQ', name: 'בזק', market: 'TASE' },
-        { symbol: 'LUMI', name: 'בנק לאומי', market: 'TASE' },
-        { symbol: 'HAPOALIM', name: 'בנק הפועלים', market: 'TASE' },
-        { symbol: 'SPY', name: 'S&P 500 ETF', market: 'NYSE' },
-        { symbol: 'QQQ', name: 'NASDAQ ETF', market: 'NASDAQ' },
-        { symbol: 'GLD', name: 'Gold ETF', market: 'NYSE' },
-      ].filter(s =>
-        s.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ).length === 0 && (
-        <div style={{ padding: '10px 14px', fontSize: '12px', color: C.textDim }}>לא נמצאו תוצאות – לחץ Enter לחיפוש ישיר</div>
-      )}
-    </div>
-  )}
-</div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
           {!isMobile && (
@@ -372,7 +385,6 @@ export default function Home() {
         <div style={{ textAlign: 'center', padding: '60px', color: C.textDim, fontSize: '14px' }}>טוען חדשות...</div>
       )}
 
-      {/* Hero + Sidebar */}
       {!loading && hero && (
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr' }}>
           <div style={{ padding: isMobile ? '20px 16px' : '28px 24px', borderRight: isMobile ? 'none' : `1px solid ${C.border}`, borderBottom: isMobile ? `1px solid ${C.border}` : 'none', background: C.bg }}>
@@ -415,14 +427,12 @@ export default function Home() {
         </div>
       )}
 
-      {/* Mobile Fear & Greed */}
       {!loading && isMobile && (
         <div style={{ padding: '12px 16px', borderBottom: `1px solid ${C.border}` }}>
           <FearGreed />
         </div>
       )}
 
-      {/* Category Bar */}
       <div style={{ background: C.bgCard, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: '0 16px', display: 'flex', overflowX: 'auto' }}>
         {categories.map((c) => (
           <div key={c} onClick={() => setActiveCategory(c)} style={{ fontSize: '12px', color: activeCategory === c ? C.text : C.textDim, padding: '11px 16px', borderBottom: activeCategory === c ? `2px solid ${C.accent}` : '2px solid transparent', fontWeight: activeCategory === c ? 500 : 400, cursor: 'pointer', whiteSpace: 'nowrap' }}>
@@ -431,7 +441,6 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Cards */}
       {!loading && (
         <div style={{ background: C.bg, padding: isMobile ? '16px' : '20px 24px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: '12px' }}>
@@ -452,7 +461,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Footer */}
       <footer style={{ background: C.bgCard, borderTop: `1px solid ${C.border}`, padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontSize: '13px', fontWeight: 500, color: C.textMuted }}>TBD</span>
         <span style={{ fontSize: '11px', color: C.textDim }}>כל הזכויות שמורות © 2025</span>
