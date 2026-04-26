@@ -49,7 +49,7 @@ function TradingViewMarket() {
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
     script.async = true;
     script.innerHTML = JSON.stringify({
-      colorTheme: 'light',
+      colorTheme: 'dark',
       dateRange: '1D',
       showChart: false,
       locale: 'he_IL',
@@ -106,32 +106,49 @@ export default function Home() {
   const secondary = filtered.slice(1, isMobile ? 3 : 5);
   const cards = filtered.slice(isMobile ? 3 : 5);
 
+  const C = {
+    bg: '#0d0f14',
+    bgCard: '#111827',
+    bgSide: '#0a0c10',
+    border: '#1e2330',
+    borderLight: '#253047',
+    text: '#f1f5f9',
+    textMuted: '#94a3b8',
+    textDim: '#475569',
+    accent: '#3b82f6',
+    accentGold: '#f59e0b',
+    up: '#22c55e',
+    down: '#ef4444',
+  };
+
   return (
-    <main dir="rtl" style={{background:'#f0ede6', minHeight:'100vh', fontFamily:'system-ui,sans-serif'}}>
+    <main dir="rtl" style={{background:C.bg, minHeight:'100vh', fontFamily:'system-ui,sans-serif'}}>
 
       {/* Topbar */}
-      <nav style={{background:'#1a1a1a', padding:'0 16px', display:'flex', alignItems:'center', justifyContent:'space-between', height:'52px'}}>
+      <nav style={{background:C.bg, borderBottom:`1px solid ${C.border}`, padding:'0 20px', display:'flex', alignItems:'center', justifyContent:'space-between', height:'52px'}}>
         <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
-          <span style={{fontSize:'16px', fontWeight:500, color:'#faf8f4'}}>TBD</span>
-          <span style={{background:'#c9a84c', color:'#1a1a1a', fontSize:'9px', fontWeight:500, padding:'2px 6px', borderRadius:'3px', letterSpacing:'1px'}}>BETA</span>
+          <span style={{fontSize:'16px', fontWeight:500, color:C.text, letterSpacing:'.5px'}}>TBD</span>
+          <span style={{background:C.accent, color:'#fff', fontSize:'9px', fontWeight:500, padding:'2px 6px', borderRadius:'3px', letterSpacing:'1px'}}>BETA</span>
         </div>
         {!isMobile && (
-          <div style={{display:'flex', gap:'20px'}}>
+          <div style={{display:'flex', gap:'22px'}}>
             {['מניות','קריפטו','נדל"ן','מאקרו','דו"חות'].map(n => (
-              <a key={n} style={{fontSize:'12px', color:'#aaa', textDecoration:'none', cursor:'pointer'}}>{n}</a>
+              <a key={n} style={{fontSize:'12px', color:C.textDim, textDecoration:'none', cursor:'pointer', transition:'color .15s'}}
+                onMouseEnter={e => (e.currentTarget.style.color=C.textMuted)}
+                onMouseLeave={e => (e.currentTarget.style.color=C.textDim)}>{n}</a>
             ))}
           </div>
         )}
       </nav>
 
       {/* Ticker */}
-      <div style={{background:'#242424'}}>
+      <div style={{background:'#111827', borderBottom:`1px solid ${C.border}`}}>
         <TradingViewTicker />
       </div>
 
       {/* Loading */}
       {loading && (
-        <div style={{textAlign:'center', padding:'60px', color:'#888', fontSize:'14px'}}>
+        <div style={{textAlign:'center', padding:'60px', color:C.textDim, fontSize:'14px'}}>
           טוען חדשות...
         </div>
       )}
@@ -141,39 +158,39 @@ export default function Home() {
         <div style={{display:'grid', gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr'}}>
 
           {/* Hero */}
-          <div style={{padding: isMobile ? '20px 16px' : '28px 24px', borderRight: isMobile ? 'none' : '1px solid #e2ddd4', borderBottom: isMobile ? '1px solid #e2ddd4' : 'none', background:'#faf8f4'}}>
-            <span style={{fontSize:'11px', fontWeight:500, color:'#c9a84c', letterSpacing:'.5px', textTransform:'uppercase'}}>{hero.source} · {hero.category}</span>
-            <h1 style={{fontSize: isMobile ? '19px' : '22px', fontWeight:500, color:'#111', lineHeight:1.45, margin:'10px 0 8px'}}>
+          <div style={{padding: isMobile ? '20px 16px' : '28px 24px', borderRight: isMobile ? 'none' : `1px solid ${C.border}`, borderBottom: isMobile ? `1px solid ${C.border}` : 'none', background:C.bg}}>
+            <span style={{fontSize:'11px', fontWeight:500, color:C.accent, letterSpacing:'1px', textTransform:'uppercase'}}>{hero.source} · BREAKING</span>
+            <h1 style={{fontSize: isMobile ? '18px' : '22px', fontWeight:500, color:C.text, lineHeight:1.45, margin:'12px 0 10px'}}>
               <a href={hero.link} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none', color:'inherit'}}>{hero.title}</a>
             </h1>
-            <span style={{fontSize:'12px', color:'#aaa'}}>{timeAgo(hero.pubDate)} · {hero.source}</span>
-            <hr style={{border:'none', borderTop:'1px solid #ede9e1', margin:'16px 0'}} />
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px'}}>
+            <span style={{fontSize:'12px', color:C.textDim}}>{timeAgo(hero.pubDate)} · {hero.source}</span>
+            <hr style={{border:'none', borderTop:`1px solid ${C.border}`, margin:'20px 0'}} />
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'18px'}}>
               {secondary.map((item, i) => (
                 <div key={i}>
-                  <div style={{fontSize:'10px', fontWeight:500, color:'#c9a84c', textTransform:'uppercase', marginBottom:'4px'}}>{item.source}</div>
+                  <div style={{fontSize:'10px', fontWeight:500, color:C.accent, textTransform:'uppercase', letterSpacing:'.5px', marginBottom:'5px'}}>{item.source}</div>
                   <a href={item.link} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
-                    <div style={{fontSize:'13px', color:'#222', lineHeight:1.45}}>{item.title}</div>
+                    <div style={{fontSize:'13px', color:C.textMuted, lineHeight:1.45}}>{item.title}</div>
                   </a>
-                  <div style={{fontSize:'11px', color:'#aaa', marginTop:'4px'}}>{timeAgo(item.pubDate)}</div>
+                  <div style={{fontSize:'11px', color:C.textDim, marginTop:'5px'}}>{timeAgo(item.pubDate)}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Sidebar - desktop only */}
+          {/* Sidebar */}
           {!isMobile && (
-            <div style={{padding:'24px 20px', background:'#f0ede6'}}>
-              <div style={{fontSize:'10px', fontWeight:500, color:'#999', letterSpacing:'1px', textTransform:'uppercase', marginBottom:'12px', paddingBottom:'8px', borderBottom:'1px solid #dedad2'}}>שוק בזמן אמת</div>
-              <div style={{background:'#faf8f4', borderRadius:'8px', overflow:'hidden', marginBottom:'20px'}}>
+            <div style={{padding:'24px 20px', background:C.bgSide, borderLeft:`1px solid ${C.border}`}}>
+              <div style={{fontSize:'10px', fontWeight:500, color:C.textDim, letterSpacing:'1px', textTransform:'uppercase', marginBottom:'12px', paddingBottom:'8px', borderBottom:`1px solid ${C.border}`}}>שוק בזמן אמת</div>
+              <div style={{background:C.bgCard, borderRadius:'8px', overflow:'hidden', marginBottom:'20px', border:`1px solid ${C.border}`}}>
                 <TradingViewMarket />
               </div>
-              <div style={{fontSize:'10px', fontWeight:500, color:'#999', letterSpacing:'1px', textTransform:'uppercase', marginBottom:'12px', paddingBottom:'8px', borderBottom:'1px solid #dedad2'}}>הכי חדש</div>
+              <div style={{fontSize:'10px', fontWeight:500, color:C.textDim, letterSpacing:'1px', textTransform:'uppercase', marginBottom:'12px', paddingBottom:'8px', borderBottom:`1px solid ${C.border}`}}>הכי חדש</div>
               {news.slice(0, 4).map((item, i) => (
-                <div key={i} style={{padding:'9px 0', borderBottom:'0.5px solid #e2ddd4'}}>
-                  <div style={{fontSize:'11px', color:'#ccc', marginBottom:'3px'}}>0{i+1}</div>
+                <div key={i} style={{padding:'9px 0', borderBottom:`0.5px solid ${C.border}`}}>
+                  <div style={{fontSize:'11px', color:C.accent, marginBottom:'3px', fontWeight:500}}>0{i+1}</div>
                   <a href={item.link} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
-                    <div style={{fontSize:'12px', color:'#333', lineHeight:1.4}}>{item.title}</div>
+                    <div style={{fontSize:'12px', color:C.textMuted, lineHeight:1.4}}>{item.title}</div>
                   </a>
                 </div>
               ))}
@@ -184,26 +201,26 @@ export default function Home() {
 
       {/* Mobile market strip */}
       {!loading && isMobile && (
-        <div style={{background:'#faf8f4', padding:'12px 16px', borderBottom:'1px solid #e2ddd4', display:'flex', gap:'8px', overflowX:'auto'}}>
+        <div style={{background:C.bgCard, padding:'12px 16px', borderBottom:`1px solid ${C.border}`, display:'flex', gap:'8px', overflowX:'auto'}}>
           {[
             {name:'TA-35', val:'2,184', chg:'+0.84%', up:true},
             {name:'S&P', val:'5,312', chg:'+0.31%', up:true},
             {name:'BTC', val:'64K', chg:'-1.20%', up:false},
             {name:'USD', val:'3.72', chg:'+0.12%', up:true},
           ].map(m => (
-            <div key={m.name} style={{background:'#f0ede6', borderRadius:'8px', padding:'8px 12px', minWidth:'80px', textAlign:'center', flexShrink:0}}>
-              <div style={{fontSize:'10px', color:'#888', marginBottom:'2px'}}>{m.name}</div>
-              <div style={{fontSize:'13px', fontWeight:500, color:'#1a1a1a'}}>{m.val}</div>
-              <div style={{fontSize:'11px', color: m.up ? '#27ae60' : '#e74c3c'}}>{m.chg}</div>
+            <div key={m.name} style={{background:C.bg, border:`1px solid ${C.border}`, borderRadius:'8px', padding:'8px 12px', minWidth:'80px', textAlign:'center', flexShrink:0}}>
+              <div style={{fontSize:'10px', color:C.textDim, marginBottom:'2px'}}>{m.name}</div>
+              <div style={{fontSize:'13px', fontWeight:500, color:C.text}}>{m.val}</div>
+              <div style={{fontSize:'11px', color: m.up ? C.up : C.down}}>{m.chg}</div>
             </div>
           ))}
         </div>
       )}
 
       {/* Category Bar */}
-      <div style={{background:'#e8e3d8', borderTop:'1px solid #dedad2', borderBottom:'1px solid #dedad2', padding:'0 16px', display:'flex', overflowX:'auto'}}>
+      <div style={{background:C.bgCard, borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:'0 16px', display:'flex', overflowX:'auto'}}>
         {categories.map((c) => (
-          <div key={c} onClick={() => setActiveCategory(c)} style={{fontSize:'12px', color: activeCategory===c ? '#1a1a1a' : '#888', padding:'11px 14px', borderBottom: activeCategory===c ? '2px solid #c9a84c' : '2px solid transparent', fontWeight: activeCategory===c ? 500 : 400, cursor:'pointer', whiteSpace:'nowrap'}}>
+          <div key={c} onClick={() => setActiveCategory(c)} style={{fontSize:'12px', color: activeCategory===c ? C.text : C.textDim, padding:'11px 16px', borderBottom: activeCategory===c ? `2px solid ${C.accent}` : '2px solid transparent', fontWeight: activeCategory===c ? 500 : 400, cursor:'pointer', whiteSpace:'nowrap', transition:'color .15s'}}>
             {c}
           </div>
         ))}
@@ -211,15 +228,17 @@ export default function Home() {
 
       {/* Cards */}
       {!loading && (
-        <div style={{background:'#f7f5f0', padding: isMobile ? '16px' : '20px 24px'}}>
+        <div style={{background:C.bg, padding: isMobile ? '16px' : '20px 24px'}}>
           <div style={{display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap:'12px'}}>
             {cards.map((card, i) => (
-              <div key={i} style={{background:'#faf8f4', border:'0.5px solid #e2ddd4', borderRadius:'10px', padding:'14px'}}>
-                <div style={{fontSize:'10px', fontWeight:500, color:'#c9a84c', textTransform:'uppercase', letterSpacing:'.5px', marginBottom:'6px'}}>{card.source}</div>
+              <div key={i} style={{background:C.bgCard, border:`0.5px solid ${C.border}`, borderRadius:'10px', padding:'16px', cursor:'pointer', transition:'border-color .15s'}}
+                onMouseEnter={e => (e.currentTarget.style.borderColor=C.borderLight)}
+                onMouseLeave={e => (e.currentTarget.style.borderColor=C.border)}>
+                <div style={{fontSize:'10px', fontWeight:500, color:C.accent, textTransform:'uppercase', letterSpacing:'.5px', marginBottom:'7px'}}>{card.source}</div>
                 <a href={card.link} target="_blank" rel="noopener noreferrer" style={{textDecoration:'none'}}>
-                  <div style={{fontSize:'13px', color:'#222', lineHeight:1.45, marginBottom:'7px'}}>{card.title}</div>
+                  <div style={{fontSize:'13px', color:C.textMuted, lineHeight:1.45, marginBottom:'8px'}}>{card.title}</div>
                 </a>
-                <div style={{fontSize:'11px', color:'#aaa'}}>{timeAgo(card.pubDate)}</div>
+                <div style={{fontSize:'11px', color:C.textDim}}>{timeAgo(card.pubDate)}</div>
               </div>
             ))}
           </div>
@@ -227,9 +246,9 @@ export default function Home() {
       )}
 
       {/* Footer */}
-      <footer style={{background:'#1a1a1a', padding:'14px 16px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-        <span style={{fontSize:'13px', fontWeight:500, color:'#888'}}>TBD</span>
-        <span style={{fontSize:'11px', color:'#555'}}>כל הזכויות שמורות © 2025</span>
+      <footer style={{background:C.bgCard, borderTop:`1px solid ${C.border}`, padding:'14px 20px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+        <span style={{fontSize:'13px', fontWeight:500, color:C.textMuted}}>TBD</span>
+        <span style={{fontSize:'11px', color:C.textDim}}>כל הזכויות שמורות © 2025</span>
       </footer>
 
     </main>
